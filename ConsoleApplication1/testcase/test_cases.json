@@ -1,0 +1,49 @@
+{
+  "TestConfiguration": {
+    "TestCaseFilePath": ".\\testcase\\test_cases.json",
+    "TestedLibraryPath": "G:\\final\\vs2010\\project\\computeEIRP\\x64\\Release\\computeEIRP.dll",
+    "TestBranchSelection": "main branch",
+    "ConcurrentUsers": 1,
+    "LaunchMode": "single-threaded",
+    "TestRunningTime": "30 minutes",
+    "TestExitCondition": "all cases completed"
+  },
+  "InterfaceFunctionCallSequence": [
+    {
+      "Step": 1,
+      "FunctionName": "init",
+      "ExpectedResult": {
+        "INFO": 0
+      },
+      "Output": {
+        "ResultPointer": "resultEIRP"
+      }
+    },
+    {
+      "Step": 2,
+      "FunctionName": "ComputeEIRP",
+      "Parameters": {
+        "EIRP0": 20.0,
+        "BW3dB": 30.0,
+        "Augment": 10.0,
+        "Attenuation": -20.0,
+        "ThetaBeam": 45.0,
+        "PhiBeam": 180.0,
+        "ThetaTarget": 45.5,
+        "PhiTarget": 180.5,
+        "resultEIRP": "${ResultPointer}"
+      },
+      "ExpectedResult": {
+        "INFO": 0,
+        "EIRP": "calculated according to the formula"
+      }
+    },
+    {
+      "Step": 3,
+      "FunctionName": "final",
+      "Parameters": {
+        "resultEIRP": "${ResultPointer}"
+      }
+    }
+  ]
+}
