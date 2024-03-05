@@ -133,10 +133,12 @@
   <ItemGroup>
     <ClCompile Include="ConsoleApplication1.cpp" />
     <ClCompile Include="testcase.cpp" />
+    <ClCompile Include="testdata.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ComputeEIRP.h" />
     <ClInclude Include="testcase.h" />
+    <ClInclude Include="testdata.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

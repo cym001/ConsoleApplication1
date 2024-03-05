@@ -38,3 +38,23 @@ Document read_config(const char* path, char* readBuffer) {
 
     return d;
 }
+
+HINSTANCE load_library(Document d){
+    // 加载动态库
+    // 确保配置中存在 "TestedLibraryPath"
+    if (!d.HasMember("TestConfiguration") || !d["TestConfiguration"].IsObject() ||
+        !d["TestConfiguration"].HasMember("TestedLibraryPath")) {
+        std::cerr << "TestedLibraryPath not found in configuration." << '\n';
+        return NULL;
+    }
+
+    const rapidjson::Value& config = d["TestConfiguration"];
+    std::string libraryPath = config["TestedLibraryPath"].GetString();
+    HINSTANCE hinstLib = LoadLibraryA(libraryPath.c_str());
+    //HINSTANCE hinstLib = LoadLibrary(TEXT("G:\\final\\vs2010\\project\\computeEIRP\\x64\\Release\\computeEIRP.dll"));
+    if (hinstLib == NULL) {
+        std::cerr << "Cannot open library: " << libraryPath << '\n';
+        return NULL;
+    }
+    return hinstLib;
+}

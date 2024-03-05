@@ -106,4 +106,5 @@ private:
 };
 
 Document read_config(const char* path, char* readBuffer);
+HINSTANCE load_library(Document d);
 #endif
