@@ -17,8 +17,7 @@ double* generateRandomDouble(double minValue, double maxValue) {
     return result;
 }
 
-//²âÊÔº¯Êı
-int test_int(std::vector<Param>& params) {
+/*int test_int(std::vector<Param>& params) {
     int* param1 = static_cast<int*>(params[0].data);
     double* param2 = static_cast<double*>(params[1].data);
     return *param1 + *param2;
@@ -28,4 +27,4 @@ double test_double(std::vector<Param>& params) {
     int* param1 = static_cast<int*>(params[0].data);
     double* param2 = static_cast<double*>(params[1].data);
     return *param1 + *param2;
-}
+}*/

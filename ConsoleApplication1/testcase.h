@@ -20,7 +20,7 @@ struct Result {
     double EIRP;
 };
 
-struct MyStruct {
+/*struct MyStruct {
     int value1;
     double value2;
 
@@ -104,7 +104,8 @@ private:
     }
 
 };
-
+*/
 Document read_config(const char* path, char* readBuffer);
 HINSTANCE load_library(Document d);
+
 #endif

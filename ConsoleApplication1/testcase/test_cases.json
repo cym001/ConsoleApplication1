@@ -2,22 +2,11 @@
   "TestConfiguration": {
     "TestCaseFilePath": ".\\testcase\\test_cases.json",
     "TestedLibraryPath": "G:\\final\\vs2010\\project\\computeEIRP\\x64\\Release\\computeEIRP.dll",
-    "TestBranchSelection": "main branch",
     "ConcurrentUsers": 1,
     "LaunchMode": "single-threaded",
-    "TestRunningTime": "30 minutes",
+    "TestRunningTime": 10,
     "TestExitCondition": "all cases completed"
   },
-  "Struct": [
-    {
-      "Result": [
-        {
-          "int": "INFO",
-          "double": "EIRP"
-        }
-      ]
-    }
-  ],
   "InterfaceFunctionCallSequence": [
     {
       "Step": 1,
@@ -33,14 +22,54 @@
       "Step": 2,
       "FunctionName": "ComputeEIRP",
       "Parameters": {
-        "EIRP0": 20.0,
-        "BW3dB": 30.0,
-        "Augment": 10.0,
-        "Attenuation": -20.0,
-        "ThetaBeam": 45.0,
-        "PhiBeam": 180.0,
-        "ThetaTarget": 45.5,
-        "PhiTarget": 180.5,
+        "EIRP0": {
+          "Description": "Regular beam coverage area EIRP",
+          "Type": "double",
+          "Value": 20.0,
+          "Range": "[0, 30]"
+        },
+        "BW3dB": {
+          "Description": "3dB beam width towards nadir point of enhanced power beam",
+          "Type": "double",
+          "Value": 30.0,
+          "Range": "[0.1, 60]"
+        },
+        "Augment": {
+          "Description": "Power enhancement capability relative to EIRP0",
+          "Type": "double",
+          "Value": 10.0,
+          "Range": "[0, 40]"
+        },
+        "Attenuation": {
+          "Description": "Attenuation setting to adjust power enhancement capability",
+          "Type": "double",
+          "Value": -20.0,
+          "Range": "[-40, 0]"
+        },
+        "ThetaBeam": {
+          "Description": "Beam pointing central angle in satellite body coordinate system",
+          "Type": "double",
+          "Value": 45.0,
+          "Range": "[0, 60]"
+        },
+        "PhiBeam": {
+          "Description": "Beam pointing azimuth angle in satellite body coordinate system",
+          "Type": "double",
+          "Value": 180.0,
+          "Range": "[0, 360]"
+        },
+        "ThetaTarget": {
+          "Description": "Target pointing central angle in satellite body coordinate system, angle distance constraint with ThetaBeam and PhiBeam <= BW3dB/2",
+          "Type": "double",
+          "Value": 45.5,
+          "Range": "Constrained by BW3dB/2"
+        },
+        "PhiTarget": {
+          "Description": "Target pointing azimuth angle in satellite body coordinate system, angle distance constraint with ThetaBeam and PhiBeam <= BW3dB/2",
+          "Type": "double",
+          "Value": 180.5,
+          "Range": "Constrained by BW3dB/2"
+        },
         "resultEIRP": "${ResultPointer}"
       },
       "ExpectedResult": {
