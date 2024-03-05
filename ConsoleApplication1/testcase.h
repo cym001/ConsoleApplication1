@@ -2,6 +2,7 @@
 #include <vector>
 #include <functional>
 #include <cstdlib>
+#include <map>
 #include <variant>
 #include <ctime>
 #include <fstream>
@@ -19,6 +20,50 @@ struct Result {
     int INFO;
     double EIRP;
 };
+
+struct TestData {
+    int groupNumber;
+    string description;
+    vector<double> values; // 存储当前数据组的多个测试值
+};
+
+struct Parameter {
+    string type;
+    double value{ 0 };
+    double min{ 0 };
+    double max{ 0 };
+    vector<TestData> testData;
+};
+
+struct FunctionCall {
+    int step;
+    string functionName;
+    map<string, Parameter> parameters; 
+    string resultPointer; 
+};
+
+struct TestConfiguration {
+    string testCaseFilePath;
+    string testedLibraryPath;
+    int concurrentUsers{ 1 };
+    string launchMode;
+    int testRunningTime{ 10 };
+    string testExitCondition;
+    vector<FunctionCall> interfaceFunctionCallSequence;
+};
+
+Document read_config(const char* path, char* readBuffer);
+
+HINSTANCE load_library(Document d);
+
+TestConfiguration ParseTestConfig(const Document& d);
+
+void PrintParameter(const Parameter& param);
+
+void PrintFunctionCall(const FunctionCall& call);
+
+void PrintTestConfiguration(const TestConfiguration& config);
+
 
 /*struct MyStruct {
     int value1;
@@ -105,7 +150,4 @@ private:
 
 };
 */
-Document read_config(const char* path, char* readBuffer);
-HINSTANCE load_library(Document d);
-
 #endif

@@ -4,6 +4,7 @@
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"
 #include "testcase.h"
+#include "testdata.h"
 
 using namespace std;
 using namespace rapidjson;
@@ -42,41 +43,20 @@ int main() {
         return 1;
     }
 
-    Result* resultEIRP = nullptr;
 
-    // 遍历并执行测试序列
-    const Value& steps = d["InterfaceFunctionCallSequence"];
-    for (auto& step : steps.GetArray()) {
-        string functionName = step["FunctionName"].GetString();
-
-        if (functionName == "init") {
-            resultEIRP = init();
-            if (!resultEIRP) {
-                cerr << "Init function failed." << endl;
-                break; // 退出循环
-            }
+    TestConfiguration config1 = ParseTestConfig(d);
+    PrintTestConfiguration(config1);
+    map<string, Parameter> parameters = config1.interfaceFunctionCallSequence[1].parameters;
+    int numRandomDataSets = 3;
+    int numValuesPerDataSet = 4;
+    for (auto& [name, param] : parameters) {
+        if (param.type == "double") {
+            GenerateRandomAndBoundaryDataForParameter(param, numRandomDataSets, numValuesPerDataSet);
         }
-        else if (functionName == "ComputeEIRP" && resultEIRP != nullptr) {
-            // 读取并设置参数
-            double EIRP0 = step["Parameters"]["EIRP0"].GetDouble();
-            double BW3dB = step["Parameters"]["BW3dB"].GetDouble();
-            double Augment = step["Parameters"]["Augment"].GetDouble();
-            double Attenuation = step["Parameters"]["Attenuation"].GetDouble();
-            double ThetaBeam = step["Parameters"]["ThetaBeam"].GetDouble();
-            double PhiBeam = step["Parameters"]["PhiBeam"].GetDouble();
-            double ThetaTarget = step["Parameters"]["ThetaTarget"].GetDouble();
-            double PhiTarget = step["Parameters"]["PhiTarget"].GetDouble();
-
-            computeEIRP(EIRP0, BW3dB, Augment, Attenuation, ThetaBeam, PhiBeam, ThetaTarget, PhiTarget, resultEIRP);
-            cout << "ComputeEIRP executed: INFO=" << resultEIRP->INFO << ", EIRP=" << resultEIRP->EIRP << endl;
-        }
-        else if (functionName == "final" && resultEIRP != nullptr) {
-            final(resultEIRP);
-            cout << "Final function executed." << endl;
-            delete resultEIRP; // 清理资源
-            resultEIRP = nullptr;
-        }
+        
     }
+
+    PrintDataInParameter(parameters);
 
     // 卸载动态库
     FreeLibrary(hinstLib);
@@ -85,3 +65,40 @@ int main() {
 
     return 0;
 }
+
+
+/*Result* resultEIRP = nullptr;
+
+// 遍历并执行测试序列
+const Value& steps = d["InterfaceFunctionCallSequence"];
+for (auto& step : steps.GetArray()) {
+    string functionName = step["FunctionName"].GetString();
+
+    if (functionName == "init") {
+        resultEIRP = init();
+        if (!resultEIRP) {
+            cerr << "Init function failed." << endl;
+            break; // 退出循环
+        }
+    }
+    else if (functionName == "ComputeEIRP" && resultEIRP != nullptr) {
+        // 读取并设置参数
+        double EIRP0 = step["Parameters"]["EIRP0"].GetDouble();
+        double BW3dB = step["Parameters"]["BW3dB"].GetDouble();
+        double Augment = step["Parameters"]["Augment"].GetDouble();
+        double Attenuation = step["Parameters"]["Attenuation"].GetDouble();
+        double ThetaBeam = step["Parameters"]["ThetaBeam"].GetDouble();
+        double PhiBeam = step["Parameters"]["PhiBeam"].GetDouble();
+        double ThetaTarget = step["Parameters"]["ThetaTarget"].GetDouble();
+        double PhiTarget = step["Parameters"]["PhiTarget"].GetDouble();
+
+        computeEIRP(EIRP0, BW3dB, Augment, Attenuation, ThetaBeam, PhiBeam, ThetaTarget, PhiTarget, resultEIRP);
+        cout << "ComputeEIRP executed: INFO=" << resultEIRP->INFO << ", EIRP=" << resultEIRP->EIRP << endl;
+    }
+    else if (functionName == "final" && resultEIRP != nullptr) {
+        final(resultEIRP);
+        cout << "Final function executed." << endl;
+        delete resultEIRP; // 清理资源
+        resultEIRP = nullptr;
+    }
+}*/

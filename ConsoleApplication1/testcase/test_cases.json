@@ -15,7 +15,9 @@
         "INFO": 0
       },
       "Output": {
-        "ResultPointer": "resultEIRP"
+        "ResultPointer": {
+          "Type": "Result*"
+        }
       }
     },
     {
@@ -23,65 +25,65 @@
       "FunctionName": "ComputeEIRP",
       "Parameters": {
         "EIRP0": {
-          "Description": "Regular beam coverage area EIRP",
           "Type": "double",
           "Value": 20.0,
-          "Range": "[0, 30]"
+          "Min": 0.0,
+          "Max": 30.0
         },
         "BW3dB": {
-          "Description": "3dB beam width towards nadir point of enhanced power beam",
           "Type": "double",
           "Value": 30.0,
-          "Range": "[0.1, 60]"
+          "Min": 0.1,
+          "Max": 60.0
         },
         "Augment": {
-          "Description": "Power enhancement capability relative to EIRP0",
           "Type": "double",
           "Value": 10.0,
-          "Range": "[0, 40]"
+          "Min": 0.0,
+          "Max": 40.0
         },
         "Attenuation": {
-          "Description": "Attenuation setting to adjust power enhancement capability",
           "Type": "double",
           "Value": -20.0,
-          "Range": "[-40, 0]"
+          "Min": -40.0,
+          "Max": 0
         },
         "ThetaBeam": {
-          "Description": "Beam pointing central angle in satellite body coordinate system",
           "Type": "double",
           "Value": 45.0,
-          "Range": "[0, 60]"
+          "Min": 0.0,
+          "Max": 40.0
         },
         "PhiBeam": {
-          "Description": "Beam pointing azimuth angle in satellite body coordinate system",
           "Type": "double",
           "Value": 180.0,
-          "Range": "[0, 360]"
+          "Min": 0.0,
+          "Max": 360.0
         },
         "ThetaTarget": {
-          "Description": "Target pointing central angle in satellite body coordinate system, angle distance constraint with ThetaBeam and PhiBeam <= BW3dB/2",
           "Type": "double",
           "Value": 45.5,
-          "Range": "Constrained by BW3dB/2"
+          "Min": 0.0,
+          "Max": 360.0
         },
         "PhiTarget": {
-          "Description": "Target pointing azimuth angle in satellite body coordinate system, angle distance constraint with ThetaBeam and PhiBeam <= BW3dB/2",
           "Type": "double",
           "Value": 180.5,
-          "Range": "Constrained by BW3dB/2"
+          "Min": 0.0,
+          "Max": 360.0
         },
-        "resultEIRP": "${ResultPointer}"
-      },
-      "ExpectedResult": {
-        "INFO": 0,
-        "EIRP": "calculated according to the formula"
+        "resultEIRP": {
+          "Type": "Result*"
+        }
       }
     },
     {
       "Step": 3,
       "FunctionName": "final",
       "Parameters": {
-        "resultEIRP": "${ResultPointer}"
+        "resultEIRP": {
+          "Type": "Result*"
+        }
       }
     }
   ]

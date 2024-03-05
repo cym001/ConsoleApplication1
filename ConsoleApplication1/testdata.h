@@ -8,9 +8,10 @@
 #ifndef __TESTDATA_H__
 #define __TESTDATA_H__
 
-int* generateRandomInt(int minValue, int maxValue);
-double* generateRandomDouble(double minValue, double maxValue);
-int test_int(std::vector<Param>& params);
-double test_double(std::vector<Param>& params);
+double GenerateRandomDouble(double minValue, double maxValue);
+void GenerateRandomAndBoundaryDataForParameter(Parameter& param, int numRandomDataSets, int numValuesPerDataSet);
+void PrintDataInParameter(map<string, Parameter> parameters);
+//int test_int(std::vector<Param>& params);
+//double test_double(std::vector<Param>& params);
 #endif
 
