@@ -6,6 +6,10 @@
 #include <string>
 #include <map>
 #include <random>
+#include "rapidjson/document.h"
+#include "rapidjson/prettywriter.h" 
+#include "rapidjson/stringbuffer.h"
+#include <fstream>
 #include "testcase.h"
 
 
@@ -46,6 +50,55 @@ void PrintDataInParameter(map<string, Parameter> parameters) {
             }
             cout << endl;
         }
+    }
+}
+
+void ExportTestDataToJson(const map<string, Parameter>& parameters, const char* filePath) {
+    Document d; 
+    d.SetObject(); 
+
+    Document::AllocatorType& allocator = d.GetAllocator();
+
+    Value params(kArrayType); 
+
+    for (const auto& [name, param] : parameters) {
+        Value paramObj(kObjectType); 
+        paramObj.AddMember("name", Value().SetString(name.c_str(), allocator), allocator);
+        paramObj.AddMember("type", Value().SetString(param.type.c_str(), allocator), allocator);
+
+        Value testDataArray(kArrayType); 
+        for (const auto& testData : param.testData) {
+            Value testDataObj(kObjectType);
+            testDataObj.AddMember("groupNumber", Value(testData.groupNumber), allocator);
+            testDataObj.AddMember("description", Value().SetString(testData.description.c_str(), allocator), allocator);
+
+            Value valuesArray(kArrayType); 
+            for (double val : testData.values) {
+                valuesArray.PushBack(Value(val), allocator);
+            }
+
+            testDataObj.AddMember("values", valuesArray, allocator);
+            testDataArray.PushBack(testDataObj, allocator);
+        }
+
+        paramObj.AddMember("testData", testDataArray, allocator);
+        params.PushBack(paramObj, allocator);
+    }
+
+    d.AddMember("parameters", params, allocator);
+
+    StringBuffer buffer;
+    PrettyWriter<StringBuffer> writer(buffer);
+    d.Accept(writer); 
+
+    ofstream file(filePath);
+    if (file.is_open()) {
+        file << buffer.GetString();
+        file.close();
+        cout << "Test data exported to " << filePath << endl;
+    }
+    else {
+        cerr << "Failed to open file for writing: " << filePath << endl;
     }
 }
 

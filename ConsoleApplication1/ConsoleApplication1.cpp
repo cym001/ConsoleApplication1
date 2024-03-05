@@ -19,16 +19,16 @@ int main() {
     // 确保配置中存在 "TestedLibraryPath"
     if (!d.HasMember("TestConfiguration") || !d["TestConfiguration"].IsObject() ||
         !d["TestConfiguration"].HasMember("TestedLibraryPath")) {
-        std::cerr << "TestedLibraryPath not found in configuration." << '\n';
+        cerr << "TestedLibraryPath not found in configuration." << '\n';
         return 1;
     }
 
     const rapidjson::Value& config = d["TestConfiguration"];
-    std::string libraryPath = config["TestedLibraryPath"].GetString();
+    string libraryPath = config["TestedLibraryPath"].GetString();
     HINSTANCE hinstLib = LoadLibraryA(libraryPath.c_str());
     //HINSTANCE hinstLib = LoadLibrary(TEXT("G:\\final\\vs2010\\project\\computeEIRP\\x64\\Release\\computeEIRP.dll"));
     if (hinstLib == NULL) {
-        std::cerr << "Cannot open library: " << libraryPath << '\n';
+        cerr << "Cannot open library: " << libraryPath << '\n';
         return 1;
     }
 
@@ -55,9 +55,9 @@ int main() {
         }
         
     }
-
+    const char* json_path = ".\\testdata\\testdata.json";
     PrintDataInParameter(parameters);
-
+    ExportTestDataToJson(parameters, json_path);
     // 卸载动态库
     FreeLibrary(hinstLib);
 

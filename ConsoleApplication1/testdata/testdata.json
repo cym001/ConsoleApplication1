@@ -1,0 +1,353 @@
+{
+    "parameters": [
+        {
+            "name": "Attenuation",
+            "type": "double",
+            "testData": [
+                {
+                    "groupNumber": 1,
+                    "description": "Random data set 1",
+                    "values": [
+                        -22.518301594063185,
+                        -21.29374475657929,
+                        -37.45867426898272,
+                        -27.566433360381893
+                    ]
+                },
+                {
+                    "groupNumber": 2,
+                    "description": "Random data set 2",
+                    "values": [
+                        -24.43113475144129,
+                        -29.975151668537286,
+                        -33.52079431815816,
+                        -23.24208097660543
+                    ]
+                },
+                {
+                    "groupNumber": 3,
+                    "description": "Random data set 3",
+                    "values": [
+                        -32.62361763905557,
+                        -33.75170476749826,
+                        -14.279271217650262,
+                        -10.295909798727063
+                    ]
+                },
+                {
+                    "groupNumber": 4,
+                    "description": "Boundary data set",
+                    "values": [
+                        -20.0
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Augment",
+            "type": "double",
+            "testData": [
+                {
+                    "groupNumber": 1,
+                    "description": "Random data set 1",
+                    "values": [
+                        17.124770793652104,
+                        29.155717184241517,
+                        4.626602175765499,
+                        24.548403949707986
+                    ]
+                },
+                {
+                    "groupNumber": 2,
+                    "description": "Random data set 2",
+                    "values": [
+                        12.346984979157739,
+                        36.72534547172426,
+                        30.17743490931856,
+                        29.26723216000184
+                    ]
+                },
+                {
+                    "groupNumber": 3,
+                    "description": "Random data set 3",
+                    "values": [
+                        9.860136958715028,
+                        12.780226771765532,
+                        34.952389095592636,
+                        14.831700265023116
+                    ]
+                },
+                {
+                    "groupNumber": 4,
+                    "description": "Boundary data set",
+                    "values": [
+                        20.0
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "BW3dB",
+            "type": "double",
+            "testData": [
+                {
+                    "groupNumber": 1,
+                    "description": "Random data set 1",
+                    "values": [
+                        22.59943521264916,
+                        39.321384756559496,
+                        56.7991275776364,
+                        53.31802671876685
+                    ]
+                },
+                {
+                    "groupNumber": 2,
+                    "description": "Random data set 2",
+                    "values": [
+                        46.30370572567865,
+                        13.692734851690517,
+                        57.073644856658156,
+                        38.81064953010436
+                    ]
+                },
+                {
+                    "groupNumber": 3,
+                    "description": "Random data set 3",
+                    "values": [
+                        22.20549955217621,
+                        18.315328374671004,
+                        43.073675944139524,
+                        57.29919246704511
+                    ]
+                },
+                {
+                    "groupNumber": 4,
+                    "description": "Boundary data set",
+                    "values": [
+                        30.05
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "EIRP0",
+            "type": "double",
+            "testData": [
+                {
+                    "groupNumber": 1,
+                    "description": "Random data set 1",
+                    "values": [
+                        18.661472622109798,
+                        8.76687412872761,
+                        16.571549760534204,
+                        25.84406559165647
+                    ]
+                },
+                {
+                    "groupNumber": 2,
+                    "description": "Random data set 2",
+                    "values": [
+                        26.45672150251383,
+                        12.550384142297808,
+                        20.157453399829247,
+                        26.091100766657437
+                    ]
+                },
+                {
+                    "groupNumber": 3,
+                    "description": "Random data set 3",
+                    "values": [
+                        3.683005403524256,
+                        24.380390637033322,
+                        8.53513343168792,
+                        22.442806530834606
+                    ]
+                },
+                {
+                    "groupNumber": 4,
+                    "description": "Boundary data set",
+                    "values": [
+                        15.0
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "PhiBeam",
+            "type": "double",
+            "testData": [
+                {
+                    "groupNumber": 1,
+                    "description": "Random data set 1",
+                    "values": [
+                        85.55988401826049,
+                        284.8173007526079,
+                        106.44900141272173,
+                        271.71375960259047
+                    ]
+                },
+                {
+                    "groupNumber": 2,
+                    "description": "Random data set 2",
+                    "values": [
+                        276.5356677084759,
+                        255.2388667645853,
+                        184.00178666128295,
+                        190.9888302900617
+                    ]
+                },
+                {
+                    "groupNumber": 3,
+                    "description": "Random data set 3",
+                    "values": [
+                        324.1733972133866,
+                        86.99286792524235,
+                        139.12435519543922,
+                        283.877346240572
+                    ]
+                },
+                {
+                    "groupNumber": 4,
+                    "description": "Boundary data set",
+                    "values": [
+                        180.0
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "PhiTarget",
+            "type": "double",
+            "testData": [
+                {
+                    "groupNumber": 1,
+                    "description": "Random data set 1",
+                    "values": [
+                        45.65909795919065,
+                        2.1130431090971378,
+                        171.85892886656407,
+                        95.72295267684747
+                    ]
+                },
+                {
+                    "groupNumber": 2,
+                    "description": "Random data set 2",
+                    "values": [
+                        322.6454397409987,
+                        137.18675334869624,
+                        74.72496130388879,
+                        2.0527008835039986
+                    ]
+                },
+                {
+                    "groupNumber": 3,
+                    "description": "Random data set 3",
+                    "values": [
+                        75.06332273100188,
+                        190.90825333120605,
+                        150.33508561072418,
+                        352.00565288442897
+                    ]
+                },
+                {
+                    "groupNumber": 4,
+                    "description": "Boundary data set",
+                    "values": [
+                        180.0
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "ThetaBeam",
+            "type": "double",
+            "testData": [
+                {
+                    "groupNumber": 1,
+                    "description": "Random data set 1",
+                    "values": [
+                        9.358832102421742,
+                        11.390324557039893,
+                        4.230070946959898,
+                        33.101211764858256
+                    ]
+                },
+                {
+                    "groupNumber": 2,
+                    "description": "Random data set 2",
+                    "values": [
+                        5.617267825971314,
+                        37.473637479199134,
+                        24.518293406630324,
+                        8.31154148299398
+                    ]
+                },
+                {
+                    "groupNumber": 3,
+                    "description": "Random data set 3",
+                    "values": [
+                        33.87764951528459,
+                        18.484009765220534,
+                        38.05516660481517,
+                        13.569674064484689
+                    ]
+                },
+                {
+                    "groupNumber": 4,
+                    "description": "Boundary data set",
+                    "values": [
+                        20.0
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "ThetaTarget",
+            "type": "double",
+            "testData": [
+                {
+                    "groupNumber": 1,
+                    "description": "Random data set 1",
+                    "values": [
+                        65.9656118577897,
+                        185.13453401607813,
+                        271.2331674409355,
+                        273.19747097865275
+                    ]
+                },
+                {
+                    "groupNumber": 2,
+                    "description": "Random data set 2",
+                    "values": [
+                        78.25837904094206,
+                        40.43104599243363,
+                        252.38377226604106,
+                        245.6065970581927
+                    ]
+                },
+                {
+                    "groupNumber": 3,
+                    "description": "Random data set 3",
+                    "values": [
+                        63.281151717111804,
+                        171.55948628555308,
+                        0.7193355960445839,
+                        308.1735670769526
+                    ]
+                },
+                {
+                    "groupNumber": 4,
+                    "description": "Boundary data set",
+                    "values": [
+                        180.0
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "resultEIRP",
+            "type": "Result*",
+            "testData": []
+        }
+    ]
+}
