@@ -18,9 +18,15 @@
     <ClCompile Include="ConsoleApplication1.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="testcase.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ComputeEIRP.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="testcase.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -8,6 +8,16 @@
     "TestRunningTime": "30 minutes",
     "TestExitCondition": "all cases completed"
   },
+  "Struct": [
+    {
+      "Result": [
+        {
+          "int": "INFO",
+          "double": "EIRP"
+        }
+      ]
+    }
+  ],
   "InterfaceFunctionCallSequence": [
     {
       "Step": 1,

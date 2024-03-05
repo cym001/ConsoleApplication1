@@ -3,38 +3,16 @@
 #include <Windows.h>
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"
+#include "testcase.h"
 
 using namespace std;
 using namespace rapidjson;
 
-struct Result {
-    int INFO;
-    double EIRP;
-};
 
 int main() {
-    // 打开并读取配置文件
-    FILE* fp;
-    errno_t err = fopen_s(&fp, ".\\testcase\\test_cases.json", "rb"); // 使用fopen_s代替fopen
-
-    if (err != 0 || !fp) {
-        cerr << "Failed to open config file" << '\n';
-        return 1;
-    }
-
-    // 使用动态内存分配来创建readBuffer
     char* readBuffer = new char[65536];
-    rapidjson::FileReadStream is(fp, readBuffer, sizeof(char) * 65536);
-
-    Document d;
-    d.ParseStream(is);
-    fclose(fp);
-
-    // 确保文档解析成功且为对象类型
-    if (!d.IsObject()) {
-        std::cerr << "JSON document is not an object." << '\n';
-        return 1;
-    }
+    const char* path = ".\\testcase\\test_cases.json";
+    Document d = read_config(path, readBuffer);
 
     // 加载动态库
     // 确保配置中存在 "TestedLibraryPath"
