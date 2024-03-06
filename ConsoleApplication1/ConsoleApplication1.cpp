@@ -38,7 +38,7 @@ int main() {
     const char* json_path = ".\\testdata\\testdata.json";
     PrintDataInParameter(parameters);
     ExportTestDataToJson(parameters, json_path);
-    // 卸载动态库
+    
     FreeLibrary(hinstLib);
 
     delete[] readBuffer;
@@ -58,11 +58,11 @@ for (auto& step : steps.GetArray()) {
         resultEIRP = init();
         if (!resultEIRP) {
             cerr << "Init function failed." << endl;
-            break; // 退出循环
+            break; 
         }
     }
     else if (functionName == "ComputeEIRP" && resultEIRP != nullptr) {
-        // 读取并设置参数
+        
         double EIRP0 = step["Parameters"]["EIRP0"].GetDouble();
         double BW3dB = step["Parameters"]["BW3dB"].GetDouble();
         double Augment = step["Parameters"]["Augment"].GetDouble();
@@ -78,7 +78,7 @@ for (auto& step : steps.GetArray()) {
     else if (functionName == "final" && resultEIRP != nullptr) {
         final(resultEIRP);
         cout << "Final function executed." << endl;
-        delete resultEIRP; // 清理资源
+        delete resultEIRP; 
         resultEIRP = nullptr;
     }
 }*/
