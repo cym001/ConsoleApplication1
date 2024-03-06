@@ -21,6 +21,12 @@ struct Result {
     double EIRP;
 };
 
+using ResultPtrFuncType = Result * (*)(); 
+using ComputeEIRPFuncType = void(*)(double, double, double, double, double, double, double, double, Result*); 
+using FinalFuncType = void(*)(Result*); 
+using FunctionPtrVariant = variant < monostate , ResultPtrFuncType, ComputeEIRPFuncType, FinalFuncType > ;
+
+
 struct TestData {
     int groupNumber;
     string description;
@@ -40,6 +46,9 @@ struct FunctionCall {
     string functionName;
     map<string, Parameter> parameters; 
     string resultPointer; 
+    FunctionPtrVariant functionPtr = std::monostate{};
+
+
 };
 
 struct TestConfiguration {
@@ -64,6 +73,7 @@ void PrintFunctionCall(const FunctionCall& call);
 
 void PrintTestConfiguration(const TestConfiguration& config);
 
+FunctionPtrVariant LoadFunctionPointer(HINSTANCE hinstLib, const string& funcName);
 
 /*struct MyStruct {
     int value1;

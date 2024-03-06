@@ -132,3 +132,23 @@ void PrintTestConfiguration(const TestConfiguration& config) {
         PrintFunctionCall(call);
     }
 }
+
+FunctionPtrVariant LoadFunctionPointer(HINSTANCE hinstLib, const string& funcName) {
+    if (funcName == "init") {
+        auto funcPtr = reinterpret_cast<ResultPtrFuncType>(GetProcAddress(hinstLib, funcName.c_str()));
+        if (!funcPtr) return monostate{};
+        return funcPtr;
+    }
+    else if (funcName == "ComputeEIRP") {
+        auto funcPtr = reinterpret_cast<ComputeEIRPFuncType>(GetProcAddress(hinstLib, funcName.c_str()));
+        if (!funcPtr) return monostate{};
+        return funcPtr;
+    }
+    else if (funcName == "final") {
+        auto funcPtr = reinterpret_cast<FinalFuncType>(GetProcAddress(hinstLib, funcName.c_str()));
+        if (!funcPtr) return monostate{};
+        return funcPtr;
+    }
+
+    return monostate{};
+}
