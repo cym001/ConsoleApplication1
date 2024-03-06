@@ -15,22 +15,9 @@ int main() {
     const char* path = ".\\testcase\\test_cases.json";
     Document d = read_config(path, readBuffer);
 
-    // 加载动态库
-    // 确保配置中存在 "TestedLibraryPath"
-    if (!d.HasMember("TestConfiguration") || !d["TestConfiguration"].IsObject() ||
-        !d["TestConfiguration"].HasMember("TestedLibraryPath")) {
-        cerr << "TestedLibraryPath not found in configuration." << '\n';
-        return 1;
-    }
+    HINSTANCE hinstLib = load_library(d);
 
-    const rapidjson::Value& config = d["TestConfiguration"];
-    string libraryPath = config["TestedLibraryPath"].GetString();
-    HINSTANCE hinstLib = LoadLibraryA(libraryPath.c_str());
-    //HINSTANCE hinstLib = LoadLibrary(TEXT("G:\\final\\vs2010\\project\\computeEIRP\\x64\\Release\\computeEIRP.dll"));
-    if (hinstLib == NULL) {
-        cerr << "Cannot open library: " << libraryPath << '\n';
-        return 1;
-    }
+
 
     // 获取函数指针
     auto init = (Result * (*)())GetProcAddress(hinstLib, "init");
@@ -46,15 +33,8 @@ int main() {
 
     TestConfiguration config1 = ParseTestConfig(d);
     PrintTestConfiguration(config1);
+    StoreGeneratedTestData(config1, 1, 3, 4);
     map<string, Parameter> parameters = config1.interfaceFunctionCallSequence[1].parameters;
-    int numRandomDataSets = 3;
-    int numValuesPerDataSet = 4;
-    for (auto& [name, param] : parameters) {
-        if (param.type == "double") {
-            GenerateRandomAndBoundaryDataForParameter(param, numRandomDataSets, numValuesPerDataSet);
-        }
-        
-    }
     const char* json_path = ".\\testdata\\testdata.json";
     PrintDataInParameter(parameters);
     ExportTestDataToJson(parameters, json_path);

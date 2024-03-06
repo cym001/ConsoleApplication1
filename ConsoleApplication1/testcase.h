@@ -54,7 +54,7 @@ struct TestConfiguration {
 
 Document read_config(const char* path, char* readBuffer);
 
-HINSTANCE load_library(Document d);
+HINSTANCE load_library(const Document& d);
 
 TestConfiguration ParseTestConfig(const Document& d);
 

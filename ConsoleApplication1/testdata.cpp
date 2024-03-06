@@ -10,7 +10,7 @@
 #include "rapidjson/prettywriter.h" 
 #include "rapidjson/stringbuffer.h"
 #include <fstream>
-#include "testcase.h"
+#include "testCase.h"
 
 
 // 生成浮点数类型的测试数据
@@ -38,6 +38,31 @@ void GenerateRandomAndBoundaryDataForParameter(Parameter& param, int numRandomDa
     double boundaryValue = (param.min + param.max) / 2;
     boundaryData.values.push_back(boundaryValue); 
     param.testData.push_back(boundaryData);
+}
+
+void GenerateRandomAndBoundaryDataForFunctionCall(FunctionCall function, int numRandomDataSets, int numValuesPerDataSet) {
+    map<string, Parameter> parameters = function.parameters;
+    for (auto& [name, param] : parameters) {
+        if (param.type == "double") {
+            GenerateRandomAndBoundaryDataForParameter(param, numRandomDataSets, numValuesPerDataSet);
+        }
+
+    }
+}
+
+void StoreGeneratedTestData(TestConfiguration& config, size_t functionCallIndex, int numRandomDataSets, int numValuesPerDataSet) {
+    if (config.interfaceFunctionCallSequence.size() > functionCallIndex) {
+        auto& parameters = config.interfaceFunctionCallSequence[functionCallIndex].parameters;
+
+        for (auto& [name, param] : parameters) {
+            if (param.type == "double") {
+                GenerateRandomAndBoundaryDataForParameter(param, numRandomDataSets, numValuesPerDataSet);
+            }
+        }
+    }
+    else {
+        cerr << "FunctionCall index out of range." << endl;
+    }
 }
 
 void PrintDataInParameter(map<string, Parameter> parameters) {

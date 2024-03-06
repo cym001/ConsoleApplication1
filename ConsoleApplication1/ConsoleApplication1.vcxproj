@@ -132,13 +132,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ConsoleApplication1.cpp" />
-    <ClCompile Include="testcase.cpp" />
-    <ClCompile Include="testdata.cpp" />
+    <ClCompile Include="testCase.cpp" />
+    <ClCompile Include="testData.cpp" />
+    <ClCompile Include="testExecution.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ComputeEIRP.h" />
-    <ClInclude Include="testcase.h" />
-    <ClInclude Include="testdata.h" />
+    <ClInclude Include="testCase.h" />
+    <ClInclude Include="testData.h" />
+    <ClInclude Include="testExecution.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

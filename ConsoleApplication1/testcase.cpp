@@ -8,7 +8,7 @@
 #include <Windows.h>
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"
-#include "testcase.h"
+#include "testCase.h"
 
 using namespace std;
 using namespace rapidjson;
@@ -40,7 +40,7 @@ Document read_config(const char* path, char* readBuffer) {
     return d;
 }
 
-HINSTANCE load_library(Document d){
+HINSTANCE load_library(const Document& d){
     // 加载动态库
     // 确保配置中存在 "TestedLibraryPath"
     if (!d.HasMember("TestConfiguration") || !d["TestConfiguration"].IsObject() ||

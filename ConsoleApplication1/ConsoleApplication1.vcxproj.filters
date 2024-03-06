@@ -18,10 +18,13 @@
     <ClCompile Include="ConsoleApplication1.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="testcase.cpp">
+    <ClCompile Include="testCase.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="testdata.cpp">
+    <ClCompile Include="testData.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="testExecution.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -29,10 +32,13 @@
     <ClInclude Include="ComputeEIRP.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="testcase.h">
+    <ClInclude Include="testCase.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="testdata.h">
+    <ClInclude Include="testData.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="testExecution.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
