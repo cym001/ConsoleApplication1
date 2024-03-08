@@ -45,16 +45,16 @@ HINSTANCE load_library(const Document& d){
     
     if (!d.HasMember("TestConfiguration") || !d["TestConfiguration"].IsObject() ||
         !d["TestConfiguration"].HasMember("TestedLibraryPath")) {
-        std::cerr << "TestedLibraryPath not found in configuration." << '\n';
+        cerr << "TestedLibraryPath not found in configuration." << '\n';
         return NULL;
     }
 
     const rapidjson::Value& config = d["TestConfiguration"];
-    std::string libraryPath = config["TestedLibraryPath"].GetString();
+    string libraryPath = config["TestedLibraryPath"].GetString();
     HINSTANCE hinstLib = LoadLibraryA(libraryPath.c_str());
     //HINSTANCE hinstLib = LoadLibrary(TEXT("G:\\final\\vs2010\\project\\computeEIRP\\x64\\Release\\computeEIRP.dll"));
     if (hinstLib == NULL) {
-        std::cerr << "Cannot open library: " << libraryPath << '\n';
+        cerr << "Cannot open library: " << libraryPath << '\n';
         return NULL;
     }
     return hinstLib;
@@ -151,4 +151,13 @@ FunctionPtrVariant LoadFunctionPointer(HINSTANCE hinstLib, const string& funcNam
     }
 
     return monostate{};
+}
+
+FunctionCall GetFunction(const TestConfiguration& config, string functionName) {
+    for (FunctionCall function : config.interfaceFunctionCallSequence) {
+        if (function.functionName == functionName) {
+            return function;
+        }
+    }
+    cerr << "FunctionCall is not exist." << endl;
 }

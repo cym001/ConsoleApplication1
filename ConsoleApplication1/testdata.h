@@ -14,15 +14,15 @@
 
 double GenerateRandomDouble(double minValue, double maxValue);
 
-void GenerateRandomAndBoundaryDataForParameter(Parameter& param, int numRandomDataSets, int numValuesPerDataSet);
+vector<double> GenerateRandomDataForParameter(Parameter& param, int numValuesPerDataSet);
 
-void GenerateRandomAndBoundaryDataForFunctionCall(FunctionCall function, int numRandomDataSets, int numValuesPerDataSet);
+void GenerateRandomDataForFunctionCall(FunctionCall& function, int numRandomDataSets, int numValuesPerDataSet);
 
-void StoreGeneratedTestData(TestConfiguration& config, size_t functionCallIndex, int numRandomDataSets, int numValuesPerDataSet);
+void StoreGeneratedTestData(TestConfiguration& config, string functionName, int numRandomDataSets, int numValuesPerDataSet);
 
-void PrintDataInParameter(map<string, Parameter> parameters);
+void PrintDataInFunction(const FunctionCall& function);
 
-void ExportTestDataToJson(const map<string, Parameter>& parameters, const char* filePath);
+void ExportTestDataToJson(const FunctionCall& function, const char* filePath);
 
 //int test_int(std::vector<Param>& params);
 //double test_double(std::vector<Param>& params);

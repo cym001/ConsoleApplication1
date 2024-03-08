@@ -33,12 +33,16 @@ int main() {
 
     TestConfiguration config1 = ParseTestConfig(d);
     PrintTestConfiguration(config1);
-    StoreGeneratedTestData(config1, 1, 3, 4);
-    map<string, Parameter> parameters = config1.interfaceFunctionCallSequence[1].parameters;
+    StoreGeneratedTestData(config1, "ComputeEIRP", 3, 4);
     const char* json_path = ".\\testdata\\testdata.json";
-    PrintDataInParameter(parameters);
-    ExportTestDataToJson(parameters, json_path);
+    FunctionCall function_EIRP = GetFunction(config1, "ComputeEIRP");
+    PrintDataInFunction(function_EIRP);
+    ExportTestDataToJson(function_EIRP, json_path);
+    //PrintDataInParameter(parameters);
+    //ExportTestDataToJson(parameters, json_path);
     
+
+
     FreeLibrary(hinstLib);
 
     delete[] readBuffer;

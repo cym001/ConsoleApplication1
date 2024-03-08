@@ -27,10 +27,11 @@ using FinalFuncType = void(*)(Result*);
 using FunctionPtrVariant = variant < monostate , ResultPtrFuncType, ComputeEIRPFuncType, FinalFuncType > ;
 
 
-struct TestData {
+struct TestDataComputeEIRP {
     int groupNumber;
+    int dataFrequency;
     string description;
-    vector<double> values; 
+    map<string, vector<double>> datas;
 };
 
 struct Parameter {
@@ -38,7 +39,6 @@ struct Parameter {
     double value{ 0 };
     double min{ 0 };
     double max{ 0 };
-    vector<TestData> testData;
 };
 
 struct FunctionCall {
@@ -47,7 +47,7 @@ struct FunctionCall {
     map<string, Parameter> parameters; 
     string resultPointer; 
     FunctionPtrVariant functionPtr = std::monostate{};
-
+    vector<TestDataComputeEIRP> testData;
 
 };
 
@@ -66,6 +66,8 @@ Document read_config(const char* path, char* readBuffer);
 HINSTANCE load_library(const Document& d);
 
 TestConfiguration ParseTestConfig(const Document& d);
+
+FunctionCall GetFunction(const TestConfiguration& config, string functionName);
 
 void PrintParameter(const Parameter& param);
 
