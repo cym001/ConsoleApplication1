@@ -15,7 +15,7 @@ using namespace rapidjson;
 
 
 Document read_config(const char* path, char* readBuffer) {
-    // 打开并读取配置文件
+    
     FILE* fp;
     errno_t err = fopen_s(&fp, path, "rb"); 
 
@@ -24,14 +24,14 @@ Document read_config(const char* path, char* readBuffer) {
         return NULL;
     }
 
-    // 使用动态内存分配来创建readBuffer
+    
     rapidjson::FileReadStream is(fp, readBuffer, sizeof(char) * 65536);
 
     Document d;
     d.ParseStream(is);
     fclose(fp);
 
-    // 确保文档解析成功且为对象类型
+    
     if (!d.IsObject()) {
         std::cerr << "JSON document is not an object." << '\n';
         return NULL;
@@ -42,19 +42,19 @@ Document read_config(const char* path, char* readBuffer) {
 
 HINSTANCE load_library(const Document& d){
     // 加载动态库
-    // 确保配置中存在 "TestedLibraryPath"
+    
     if (!d.HasMember("TestConfiguration") || !d["TestConfiguration"].IsObject() ||
         !d["TestConfiguration"].HasMember("TestedLibraryPath")) {
-        std::cerr << "TestedLibraryPath not found in configuration." << '\n';
+        cerr << "TestedLibraryPath not found in configuration." << '\n';
         return NULL;
     }
 
     const rapidjson::Value& config = d["TestConfiguration"];
-    std::string libraryPath = config["TestedLibraryPath"].GetString();
+    string libraryPath = config["TestedLibraryPath"].GetString();
     HINSTANCE hinstLib = LoadLibraryA(libraryPath.c_str());
     //HINSTANCE hinstLib = LoadLibrary(TEXT("G:\\final\\vs2010\\project\\computeEIRP\\x64\\Release\\computeEIRP.dll"));
     if (hinstLib == NULL) {
-        std::cerr << "Cannot open library: " << libraryPath << '\n';
+        cerr << "Cannot open library: " << libraryPath << '\n';
         return NULL;
     }
     return hinstLib;
@@ -84,7 +84,7 @@ TestConfiguration ParseTestConfig(const Document& d) {
                     param.type = p.value["Type"].GetString();
                 }
 
-                // 设置默认值，以便在字段缺失时使用
+                
                 param.value = p.value.HasMember("Value") ? p.value["Value"].GetDouble() : 0.0;
                 param.min = p.value.HasMember("Min") ? p.value["Min"].GetDouble() : 0.0;
                 param.max = p.value.HasMember("Max") ? p.value["Max"].GetDouble() : -1.0;
@@ -151,4 +151,13 @@ FunctionPtrVariant LoadFunctionPointer(HINSTANCE hinstLib, const string& funcNam
     }
 
     return monostate{};
+}
+
+FunctionCall GetFunction(const TestConfiguration& config, string functionName) {
+    for (FunctionCall function : config.interfaceFunctionCallSequence) {
+        if (function.functionName == functionName) {
+            return function;
+        }
+    }
+    cerr << "FunctionCall is not exist." << endl;
 }

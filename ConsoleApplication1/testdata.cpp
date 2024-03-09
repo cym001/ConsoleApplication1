@@ -9,63 +9,156 @@
 #include "rapidjson/document.h"
 #include "rapidjson/prettywriter.h" 
 #include "rapidjson/stringbuffer.h"
+#include "rapidjson/filewritestream.h"
 #include <fstream>
 #include "testCase.h"
+#include "testData.h"
 
 
 // 生成浮点数类型的测试数据
 double GenerateRandomDouble(double min, double max) {
-    static mt19937 gen(time(nullptr)); // 随机数生成器
+    static mt19937 gen(time(nullptr)); 
     uniform_real_distribution<> dis(min, max);
     return dis(gen);
 }
 
-void GenerateRandomAndBoundaryDataForParameter(Parameter& param, int numRandomDataSets, int numValuesPerDataSet) {
-    for (int i = 0; i < numRandomDataSets; ++i) {
-        TestData randomData;
-        randomData.groupNumber = i + 1;
-        randomData.description = "Random data set " + std::to_string(i + 1);
-        for (int j = 0; j < numValuesPerDataSet; ++j) {
-            double value = GenerateRandomDouble(param.min, param.max);
-            randomData.values.push_back(value);
-        }
-        param.testData.push_back(randomData);
+vector<double> GenerateRandomDataForParameter(Parameter& param,  int numValuesPerDataSet) {
+    vector<double> values;
+    for (int i = 0; i < numValuesPerDataSet; ++i) {
+        double value = GenerateRandomDouble(param.min, param.max);
+        values.push_back(value);
     }
-
-    TestData boundaryData;
-    boundaryData.groupNumber = numRandomDataSets + 1;
-    boundaryData.description = "Boundary data set";
-    double boundaryValue = (param.min + param.max) / 2;
-    boundaryData.values.push_back(boundaryValue); 
-    param.testData.push_back(boundaryData);
+    return values;
 }
 
-void GenerateRandomAndBoundaryDataForFunctionCall(FunctionCall function, int numRandomDataSets, int numValuesPerDataSet) {
+void GenerateRandomDataForFunctionCall(FunctionCall& function, int numRandomDataSets, int numValuesPerDataSet) {
     map<string, Parameter> parameters = function.parameters;
-    for (auto& [name, param] : parameters) {
-        if (param.type == "double") {
-            GenerateRandomAndBoundaryDataForParameter(param, numRandomDataSets, numValuesPerDataSet);
-        }
-
-    }
-}
-
-void StoreGeneratedTestData(TestConfiguration& config, size_t functionCallIndex, int numRandomDataSets, int numValuesPerDataSet) {
-    if (config.interfaceFunctionCallSequence.size() > functionCallIndex) {
-        auto& parameters = config.interfaceFunctionCallSequence[functionCallIndex].parameters;
-
+    for (int i = 0; i < numRandomDataSets; i++) {
+        TestDataComputeEIRP testData;
+        testData.groupNumber = i + 1;
+        testData.description = "Random data set " + to_string(i + 1);
+        testData.dataFrequency = numValuesPerDataSet;
         for (auto& [name, param] : parameters) {
             if (param.type == "double") {
-                GenerateRandomAndBoundaryDataForParameter(param, numRandomDataSets, numValuesPerDataSet);
+                vector<double> values = GenerateRandomDataForParameter(param, numValuesPerDataSet);
+                testData.datas.insert(pair<string, vector<double>>(name, values));
             }
         }
+        function.testData.push_back(testData);
     }
-    else {
-        cerr << "FunctionCall index out of range." << endl;
+    
+}
+
+void StoreGeneratedTestData(TestConfiguration& config, string functionName, int numRandomDataSets, int numValuesPerDataSet) {
+    for (FunctionCall &function : config.interfaceFunctionCallSequence) {
+        if (function.functionName == functionName) {
+            GenerateRandomDataForFunctionCall(function, numRandomDataSets, numValuesPerDataSet);
+            
+            return;
+        }
+    }
+
+    cerr << "FunctionCall is not exist." << endl;
+    
+}
+
+void PrintDataInFunction(const FunctionCall& function) {
+    cout << "Function Call Data:\n";
+    cout << "Step: " << function.step << "\n";
+    cout << "Function Name: " << function.functionName << "\n";
+    cout << "Parameters:\n";
+
+    // 打印参数
+    for (const auto& [name, param] : function.parameters) {
+        cout << "  Name: " << name
+            << ", Type: " << param.type
+            << ", Value: " << param.value
+            << ", Min: " << param.min
+            << ", Max: " << param.max << "\n";
+    }
+
+    cout << "Result Pointer: " << function.resultPointer << "\n";
+
+    // 打印测试数据
+    cout << "Test Data:\n";
+    for (const auto& testData : function.testData) {
+        cout << "  Group Number: " << testData.groupNumber << "\n";
+        cout << "  Data Frequency: " << testData.dataFrequency << "\n";
+        cout << "  Description: " << testData.description << "\n";
+        cout << "  Datas:\n";
+
+        for (const auto& [paramName, values] : testData.datas) {
+            cout << "    " << paramName << ": ";
+            for (const auto& value : values) {
+                cout << value << " ";
+            }
+            cout << "\n";
+        }
     }
 }
 
-void PrintDataInParameter(map<string, Parameter> parameters) {
+void ExportTestDataToJson(const FunctionCall& function, const char* filePath) {
+    // 创建一个RapidJSON的Document对象
+    Document d;
+    d.SetObject();
+
+    Document::AllocatorType& allocator = d.GetAllocator();
+
+    // 添加基础信息
+    Value functionNameValue;
+    functionNameValue.SetString(function.functionName.c_str(), allocator);
+    d.AddMember("functionName", functionNameValue, allocator);
+
+    Value parameters(kObjectType);
+    // 遍历并添加参数信息
+    for (const auto& [paramName, param] : function.parameters) {
+        Value parameterObject(kObjectType);
+        parameterObject.AddMember("type", Value().SetString(param.type.c_str(), allocator), allocator);
+        parameterObject.AddMember("value", Value(param.value), allocator);
+        parameterObject.AddMember("min", Value(param.min), allocator);
+        parameterObject.AddMember("max", Value(param.max), allocator);
+        parameters.AddMember(Value().SetString(paramName.c_str(), allocator), parameterObject, allocator);
+    }
+    d.AddMember("parameters", parameters, allocator);
+
+    // 测试数据
+    Value testDataArray(kArrayType);
+    for (const auto& testData : function.testData) {
+        Value testDataObject(kObjectType);
+        testDataObject.AddMember("groupNumber", Value(testData.groupNumber), allocator);
+        testDataObject.AddMember("dataFrequency", Value(testData.dataFrequency), allocator);
+        testDataObject.AddMember("description", Value().SetString(testData.description.c_str(), allocator), allocator);
+
+        Value datas(kObjectType);
+        for (const auto& [paramName, values] : testData.datas) {
+            Value valuesArray(kArrayType);
+            for (double value : values) {
+                valuesArray.PushBack(Value(value), allocator);
+            }
+            datas.AddMember(Value().SetString(paramName.c_str(), allocator), valuesArray, allocator);
+        }
+        testDataObject.AddMember("datas", datas, allocator);
+        testDataArray.PushBack(testDataObject, allocator);
+    }
+    d.AddMember("testData", testDataArray, allocator);
+
+    // 写入文件
+    StringBuffer buffer;
+    PrettyWriter<StringBuffer> writer(buffer);
+    d.Accept(writer);
+
+    ofstream file(filePath);
+    if (file.is_open()) {
+        file << buffer.GetString();
+        file.close();
+        cout << "Test data exported to " << filePath << endl;
+    }
+    else {
+        cerr << "Failed to open file for writing: " << filePath << endl;
+    }
+}
+
+/*void PrintDataInFunction(TestConfiguration& config) {
     for (const auto& [name, param] : parameters) {
         cout << "Parameter: " << name << endl;
         for (const auto& data : param.testData) {
@@ -128,7 +221,7 @@ void ExportTestDataToJson(const map<string, Parameter>& parameters, const char* 
 }
 
 
-/*int test_int(std::vector<Param>& params) {
+int test_int(std::vector<Param>& params) {
     int* param1 = static_cast<int*>(params[0].data);
     double* param2 = static_cast<double*>(params[1].data);
     return *param1 + *param2;

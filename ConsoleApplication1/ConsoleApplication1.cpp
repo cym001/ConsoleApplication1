@@ -5,6 +5,7 @@
 #include "rapidjson/filereadstream.h"
 #include "testcase.h"
 #include "testdata.h"
+#include "testExecution.h"
 
 using namespace std;
 using namespace rapidjson;
@@ -41,7 +42,7 @@ int main() {
     //PrintDataInParameter(parameters);
     //ExportTestDataToJson(parameters, json_path);
     
-
+    PerformAutomatedTestsComputeEIRP(hinstLib, config1);
 
     FreeLibrary(hinstLib);
 

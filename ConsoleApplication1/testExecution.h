@@ -17,10 +17,7 @@ struct SingleTestResult {
     string functionName;
     bool success;
     string errorMessage;
-    optional<Result> output;
 
-    SingleTestResult(string name, bool succ, string error = "", optional<Result> out = nullopt)
-        : functionName(name), success(succ), errorMessage(error), output(out) {}
 };
 
 struct GroupTestResult {
@@ -35,4 +32,6 @@ struct TestResult {
 
 
 
+double GetRaramValueEIRP(TestDataComputeEIRP testData, string paramName, int index);
 
+void PerformAutomatedTestsComputeEIRP(HINSTANCE hinstLib, const TestConfiguration& config);
