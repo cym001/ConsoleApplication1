@@ -41,8 +41,10 @@ int main() {
     ExportTestDataToJson(function_EIRP, json_path);
     //PrintDataInParameter(parameters);
     //ExportTestDataToJson(parameters, json_path);
-    
-    PerformAutomatedTestsComputeEIRP(hinstLib, config1);
+
+    TestResult testResult = PerformAutomatedTestsComputeEIRP(hinstLib, config1);
+
+    ExportTestResultsToJson(testResult.groupTestResult, ".\\testresult\\test_result.json");
 
     FreeLibrary(hinstLib);
 

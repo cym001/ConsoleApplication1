@@ -34,4 +34,6 @@ struct TestResult {
 
 double GetRaramValueEIRP(TestDataComputeEIRP testData, string paramName, int index);
 
-void PerformAutomatedTestsComputeEIRP(HINSTANCE hinstLib, const TestConfiguration& config);
+TestResult PerformAutomatedTestsComputeEIRP(HINSTANCE hinstLib, const TestConfiguration& config);
+
+void ExportTestResultsToJson(const vector<GroupTestResult>& groupTestResults, const char* filePath);
