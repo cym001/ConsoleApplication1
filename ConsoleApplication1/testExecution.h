@@ -30,6 +30,37 @@ struct TestResult {
     vector<GroupTestResult> groupTestResult;
 };
 
+struct PerformanceTestResult {
+    string testName; 
+    double executionTime; 
+    double memoryUsage; 
+    double cpuUsage; 
+    bool success; 
+    string errorMessage; 
+
+    PerformanceTestResult(string name, double execTime, double memUsage, double cpu, bool pass, string errMsg = "")
+        : testName(name), executionTime(execTime), memoryUsage(memUsage), cpuUsage(cpu), success(pass), errorMessage(errMsg) {}
+};
+
+
+struct PerformanceTestSuiteResult {
+    string suiteName; 
+    vector<PerformanceTestResult> testResults; 
+
+    void addTestResult(const PerformanceTestResult& result) {
+        testResults.push_back(result);
+    }
+};
+
+
+struct PerformanceTestReport {
+    string reportName; 
+    vector<PerformanceTestSuiteResult> suiteResults;
+
+    void addSuiteResult(const PerformanceTestSuiteResult& suiteResult) {
+        suiteResults.push_back(suiteResult);
+    }
+};
 
 
 double GetRaramValueEIRP(TestDataComputeEIRP testData, string paramName, int index);
@@ -37,3 +68,9 @@ double GetRaramValueEIRP(TestDataComputeEIRP testData, string paramName, int ind
 TestResult PerformAutomatedTestsComputeEIRP(HINSTANCE hinstLib, const TestConfiguration& config);
 
 void ExportTestResultsToJson(const vector<GroupTestResult>& groupTestResults, const char* filePath);
+
+PerformanceTestReport PerformanceTestComputeEIRP(HINSTANCE hinstLib, const TestConfiguration& config);
+
+void PrintPerformanceTestReport(const PerformanceTestReport& report);
+
+void ExportPerformanceTestReportToJson(const PerformanceTestReport& report, const char* filePath);

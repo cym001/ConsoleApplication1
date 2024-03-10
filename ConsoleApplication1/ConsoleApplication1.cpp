@@ -42,9 +42,15 @@ int main() {
     //PrintDataInParameter(parameters);
     //ExportTestDataToJson(parameters, json_path);
 
-    TestResult testResult = PerformAutomatedTestsComputeEIRP(hinstLib, config1);
+    //TestResult testResult = PerformAutomatedTestsComputeEIRP(hinstLib, config1);
 
-    ExportTestResultsToJson(testResult.groupTestResult, ".\\testresult\\test_result.json");
+    //ExportTestResultsToJson(testResult.groupTestResult, ".\\testresult\\test_result.json");
+
+    PerformanceTestReport testReport = PerformanceTestComputeEIRP(hinstLib, config1);
+
+    PrintPerformanceTestReport(testReport);
+
+    ExportPerformanceTestReportToJson(testReport, ".\\testresult\\performance_test_result.json");
 
     FreeLibrary(hinstLib);
 

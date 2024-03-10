@@ -7,6 +7,7 @@
 #include <variant>
 #include <ctime>
 #include <fstream>
+#include <chrono>
 #include <cstdio>
 #include <Windows.h>
 #include "rapidjson/document.h"
@@ -16,6 +17,7 @@
 #include "testCase.h"
 #include "testExecution.h"
 #include "testdata.h"
+
 
 using namespace rapidjson;
 using namespace std;
@@ -161,6 +163,155 @@ void ExportTestResultsToJson(const vector<GroupTestResult>& groupTestResults, co
         file << buffer.GetString();
         file.close();
         cout << "Test data exported to " << filePath << endl;
+    }
+    else {
+        cerr << "Failed to open file for writing: " << filePath << endl;
+    }
+}
+
+
+PerformanceTestReport PerformanceTestComputeEIRP(HINSTANCE hinstLib, const TestConfiguration& config) {
+    Result* initResult = nullptr;
+    PerformanceTestReport testReport;
+    testReport.reportName = "performanceTest";
+    PerformanceTestSuiteResult testSuiteResult1;
+
+    auto init = reinterpret_cast<Result * (*)()>(GetProcAddress(hinstLib, "init"));
+    auto computeEIRP = reinterpret_cast<void(*)(double, double, double, double, double, double, double, double, Result*)>(GetProcAddress(hinstLib, "ComputeEIRP"));
+    auto final = reinterpret_cast<void(*)(Result*)>(GetProcAddress(hinstLib, "final"));
+
+
+    if (!init || !computeEIRP || !final) {
+        cerr << "Function cannot be loaded." << endl;
+        bool success = false;
+        string errorMessage = "Load function failed";
+
+        PerformanceTestResult testResult1 = PerformanceTestResult("PerformanceTest", 0, 0, 0, success, errorMessage);
+        testSuiteResult1.addTestResult(testResult1);
+        testReport.addSuiteResult(testSuiteResult1);
+        return testReport;
+    }
+
+    initResult = init();
+    if (!initResult) {
+        bool success = false;
+        string errorMessage = "init function execution failed.";
+
+        PerformanceTestResult testResult1 = PerformanceTestResult("PerformanceTest", 0, 0, 0, success, errorMessage);
+        testSuiteResult1.addTestResult(testResult1);
+        testReport.addSuiteResult(testSuiteResult1);
+        return testReport;
+    }
+
+    FunctionCall computeEIRPFunction = GetFunction(config, "ComputeEIRP");
+
+    int count = 0;
+    // 遍历所有测试数据组
+    for (const auto& testDataGroup : computeEIRPFunction.testData) {
+        int dataFrequency = testDataGroup.dataFrequency;
+        PerformanceTestSuiteResult testSuiteResult;
+        testSuiteResult.suiteName = "PerformanceTest Group" + to_string(++count);
+
+        for (int i = 0; i < dataFrequency; i++) {
+            double EIRP0 = GetRaramValueEIRP(testDataGroup, "EIRP0", i);
+            double BW3dB = GetRaramValueEIRP(testDataGroup, "BW3dB", i);
+            double Augment = GetRaramValueEIRP(testDataGroup, "Augment", i);
+            double Attenuation = GetRaramValueEIRP(testDataGroup, "Attenuation", i);
+            double ThetaBeam = GetRaramValueEIRP(testDataGroup, "ThetaBeam", i);
+            double PhiBeam = GetRaramValueEIRP(testDataGroup, "PhiBeam", i);
+            double ThetaTarget = GetRaramValueEIRP(testDataGroup, "ThetaTarget", i);
+            double PhiTarget = GetRaramValueEIRP(testDataGroup, "PhiTarget", i);
+
+            auto computeStart = std::chrono::high_resolution_clock::now();
+            computeEIRP(EIRP0, BW3dB, Augment, Attenuation, ThetaBeam, PhiBeam, ThetaTarget, PhiTarget, initResult);
+            auto computeEnd = std::chrono::high_resolution_clock::now();
+
+            chrono::duration<double, std::milli> computeDuration = computeEnd - computeStart;
+            string testName = "Case" + to_string(i + 1);
+            PerformanceTestResult testResult = PerformanceTestResult(testName, computeDuration.count(), 0, 0, true, "");
+            testSuiteResult.addTestResult(testResult);
+        }
+        testReport.addSuiteResult(testSuiteResult);
+
+    }
+
+
+    // 执行final函数
+    final(initResult);
+
+    return testReport;
+
+}
+
+void PrintPerformanceTestReport(const PerformanceTestReport& report) {
+    cout << "Report Name: " << report.reportName << "\n";
+    cout << "-----------------------------------------\n";
+
+    for (const auto& suite : report.suiteResults) {
+        cout << "Suite Name: " << suite.suiteName << "\n";
+
+        for (const auto& result : suite.testResults) {
+            cout << "  Test Name: " << result.testName << "\n";
+            cout << "    Execution Time: " << result.executionTime << " seconds\n";
+            cout << "    Memory Usage: " << result.memoryUsage << " MB\n";
+            cout << "    CPU Usage: " << result.cpuUsage << "%\n";
+            cout << "    Success: " << (result.success ? "Yes" : "No") << "\n";
+            if (!result.success) {
+                cout << "    Error Message: " << result.errorMessage << "\n";
+            }
+            cout << "-----------------------------------------\n";
+        }
+    }
+}
+
+void ExportPerformanceTestReportToJson(const PerformanceTestReport& report, const char* filePath) {
+    Document d;
+    d.SetObject();
+
+    Document::AllocatorType& allocator = d.GetAllocator();
+
+    // 添加报告名称
+    d.AddMember("reportName", Value().SetString(report.reportName.c_str(), allocator), allocator);
+
+    // 创建测试套件结果的JSON数组
+    Value suiteResultsArray(kArrayType);
+
+    for (const auto& suiteResult : report.suiteResults) {
+        Value suiteObject(kObjectType);
+        suiteObject.AddMember("suiteName", Value().SetString(suiteResult.suiteName.c_str(), allocator), allocator);
+
+        Value testResultsArray(kArrayType);
+        for (const auto& testResult : suiteResult.testResults) {
+            Value testObject(kObjectType);
+            testObject.AddMember("testName", Value().SetString(testResult.testName.c_str(), allocator), allocator);
+            testObject.AddMember("executionTime", Value(testResult.executionTime), allocator);
+            testObject.AddMember("memoryUsage", Value(testResult.memoryUsage), allocator);
+            testObject.AddMember("cpuUsage", Value(testResult.cpuUsage), allocator);
+            testObject.AddMember("success", Value(testResult.success), allocator);
+
+            if (!testResult.success) {
+                testObject.AddMember("errorMessage", Value().SetString(testResult.errorMessage.c_str(), allocator), allocator);
+            }
+
+            testResultsArray.PushBack(testObject, allocator);
+        }
+
+        suiteObject.AddMember("testResults", testResultsArray, allocator);
+        suiteResultsArray.PushBack(suiteObject, allocator);
+    }
+
+    d.AddMember("suiteResults", suiteResultsArray, allocator);
+
+    StringBuffer buffer;
+    PrettyWriter<StringBuffer> writer(buffer);
+    d.Accept(writer);
+
+    // 写入文件
+    ofstream file(filePath);
+    if (file.is_open()) {
+        file << buffer.GetString();
+        file.close();
+        cout << "Performance test data exported to: " << filePath << endl;
     }
     else {
         cerr << "Failed to open file for writing: " << filePath << endl;
