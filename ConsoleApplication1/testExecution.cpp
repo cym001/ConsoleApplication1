@@ -1,3 +1,6 @@
+#ifndef PSAPI_VERSION
+#define PSAPI_VERSION 1
+#endif
 #include <optional>
 #include <vector>
 #include <iostream>
@@ -10,6 +13,7 @@
 #include <chrono>
 #include <cstdio>
 #include <Windows.h>
+#include <psapi.h>
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"
 #include "rapidjson/prettywriter.h"
@@ -17,6 +21,8 @@
 #include "testCase.h"
 #include "testExecution.h"
 #include "testdata.h"
+
+#pragma  comment(lib,"Psapi.lib")
 
 
 using namespace rapidjson;
@@ -176,6 +182,15 @@ PerformanceTestReport PerformanceTestComputeEIRP(HINSTANCE hinstLib, const TestC
     testReport.reportName = "performanceTest";
     PerformanceTestSuiteResult testSuiteResult1;
 
+    HANDLE hProcess = GetCurrentProcess();
+    SYSTEM_INFO sysInfo;
+    GetSystemInfo(&sysInfo);
+    DWORD numProcessors = sysInfo.dwNumberOfProcessors;
+
+    PROCESS_MEMORY_COUNTERS memCounter;
+    SIZE_T memBefore, memAfter;
+
+
     auto init = reinterpret_cast<Result * (*)()>(GetProcAddress(hinstLib, "init"));
     auto computeEIRP = reinterpret_cast<void(*)(double, double, double, double, double, double, double, double, Result*)>(GetProcAddress(hinstLib, "ComputeEIRP"));
     auto final = reinterpret_cast<void(*)(Result*)>(GetProcAddress(hinstLib, "final"));
@@ -222,13 +237,23 @@ PerformanceTestReport PerformanceTestComputeEIRP(HINSTANCE hinstLib, const TestC
             double ThetaTarget = GetRaramValueEIRP(testDataGroup, "ThetaTarget", i);
             double PhiTarget = GetRaramValueEIRP(testDataGroup, "PhiTarget", i);
 
+            GetProcessMemoryInfo(hProcess, &memCounter, sizeof(memCounter));
+            memBefore = memCounter.WorkingSetSize;
+
             auto computeStart = std::chrono::high_resolution_clock::now();
             computeEIRP(EIRP0, BW3dB, Augment, Attenuation, ThetaBeam, PhiBeam, ThetaTarget, PhiTarget, initResult);
             auto computeEnd = std::chrono::high_resolution_clock::now();
 
+            GetProcessMemoryInfo(hProcess, &memCounter, sizeof(memCounter));
+            memAfter = memCounter.WorkingSetSize;
+            SIZE_T memDiff = memAfter - memBefore;
+
             chrono::duration<double, std::milli> computeDuration = computeEnd - computeStart;
             string testName = "Case" + to_string(i + 1);
-            PerformanceTestResult testResult = PerformanceTestResult(testName, computeDuration.count(), 0, 0, true, "");
+            double memUsage = memDiff / 1024.0;
+            bool success = (initResult->INFO == 0);
+            string errorMessage = success ? "" : "Test failed with INFO = 1";
+            PerformanceTestResult testResult = PerformanceTestResult(testName, computeDuration.count(), memUsage, 0, success, errorMessage);
             testSuiteResult.addTestResult(testResult);
         }
         testReport.addSuiteResult(testSuiteResult);
