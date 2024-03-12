@@ -31,6 +31,17 @@ vector<double> GenerateRandomDataForParameter(Parameter& param,  int numValuesPe
     return values;
 }
 
+vector<double> GenerateRandomDataForParameterLimit(Parameter& param, int numValuesPerDataSet, vector<double> temp, vector<double> BW3dB) {
+    vector<double> values;
+    for (int i = 0; i < numValuesPerDataSet; ++i) {
+        double min = temp[i] - 0.25 * BW3dB[i];
+        double max = temp[i] + 0.25 * BW3dB[i];
+        double value = GenerateRandomDouble(min, max);
+        values.push_back(value);
+    }
+    return values;
+}
+
 void GenerateRandomDataForFunctionCall(FunctionCall& function, int numRandomDataSets, int numValuesPerDataSet) {
     map<string, Parameter> parameters = function.parameters;
     for (int i = 0; i < numRandomDataSets; i++) {
@@ -49,10 +60,43 @@ void GenerateRandomDataForFunctionCall(FunctionCall& function, int numRandomData
     
 }
 
+void GenerateRandomDataForFunctionCall1(FunctionCall& function, int numRandomDataSets, int numValuesPerDataSet) {
+    map<string, Parameter> parameters = function.parameters;
+    for (int i = 0; i < numRandomDataSets; i++) {
+        TestDataComputeEIRP testData;
+        testData.groupNumber = i + 1;
+        testData.description = "Random data set " + to_string(i + 1);
+        testData.dataFrequency = numValuesPerDataSet;
+        Parameter PhiTarget, ThetaTarget;
+        for (auto& [name, param] : parameters) {
+            if (name == "PhiTarget") {
+                PhiTarget = param;
+            }
+            else if (name == "ThetaTarget") {
+                ThetaTarget = param;
+
+            }
+            else if (param.type == "double") {
+                vector<double> values = GenerateRandomDataForParameter(param, numValuesPerDataSet);
+                testData.datas.insert(pair<string, vector<double>>(name, values));
+            }
+        }
+        vector<double> BW3dB = GetParamsValue(testData, "BW3dB");
+        vector<double> ThetaBeam = GetParamsValue(testData, "ThetaBeam");
+        vector<double> PhiBeam = GetParamsValue(testData, "PhiBeam");
+        vector<double> values = GenerateRandomDataForParameterLimit(PhiTarget, numValuesPerDataSet, PhiBeam, BW3dB);
+        testData.datas.insert(pair<string, vector<double>>("PhiTarget", values));
+        values = GenerateRandomDataForParameterLimit(ThetaTarget, numValuesPerDataSet, ThetaBeam, BW3dB);
+        testData.datas.insert(pair<string, vector<double>>("ThetaTarget", values));
+        function.testData.push_back(testData);
+    }
+
+}
+
 void StoreGeneratedTestData(TestConfiguration& config, string functionName, int numRandomDataSets, int numValuesPerDataSet) {
     for (FunctionCall &function : config.interfaceFunctionCallSequence) {
         if (function.functionName == functionName) {
-            GenerateRandomDataForFunctionCall(function, numRandomDataSets, numValuesPerDataSet);
+            GenerateRandomDataForFunctionCall1(function, numRandomDataSets, numValuesPerDataSet);
             
             return;
         }
@@ -232,3 +276,16 @@ double test_double(std::vector<Param>& params) {
     double* param2 = static_cast<double*>(params[1].data);
     return *param1 + *param2;
 }*/
+
+vector<double> GetParamsValue(TestDataComputeEIRP testData, string paramName) {
+    auto it = testData.datas.find(paramName);
+    vector<double> null;
+    if (it != testData.datas.end()) {
+        const auto& values = it->second;
+        return values;
+    }
+    else {
+        cerr << "Parameter not found: " << paramName << endl;
+    }
+    return null;
+}

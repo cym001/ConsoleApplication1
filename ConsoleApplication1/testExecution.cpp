@@ -29,7 +29,7 @@ using namespace rapidjson;
 using namespace std;
 
 
-double GetRaramValueEIRP(TestDataComputeEIRP testData, string paramName, int index) {
+double GetParamValueEIRP(TestDataComputeEIRP testData, string paramName, int index) {
     auto it = testData.datas.find(paramName);
     if (it != testData.datas.end()) {
         const auto& values = it->second; 
@@ -92,14 +92,14 @@ TestResult PerformAutomatedTestsComputeEIRP(HINSTANCE hinstLib, const TestConfig
         int dataFrequency = testDataGroup.dataFrequency;
 
         for (int i = 0; i < dataFrequency; i++) {
-            double EIRP0 = GetRaramValueEIRP(testDataGroup, "EIRP0", i);
-            double BW3dB = GetRaramValueEIRP(testDataGroup, "BW3dB", i);
-            double Augment = GetRaramValueEIRP(testDataGroup, "Augment", i);
-            double Attenuation = GetRaramValueEIRP(testDataGroup, "Attenuation", i);
-            double ThetaBeam = GetRaramValueEIRP(testDataGroup, "ThetaBeam", i);
-            double PhiBeam = GetRaramValueEIRP(testDataGroup, "PhiBeam", i);
-            double ThetaTarget = GetRaramValueEIRP(testDataGroup, "ThetaTarget", i);
-            double PhiTarget = GetRaramValueEIRP(testDataGroup, "PhiTarget", i);
+            double EIRP0 = GetParamValueEIRP(testDataGroup, "EIRP0", i);
+            double BW3dB = GetParamValueEIRP(testDataGroup, "BW3dB", i);
+            double Augment = GetParamValueEIRP(testDataGroup, "Augment", i);
+            double Attenuation = GetParamValueEIRP(testDataGroup, "Attenuation", i);
+            double ThetaBeam = GetParamValueEIRP(testDataGroup, "ThetaBeam", i);
+            double PhiBeam = GetParamValueEIRP(testDataGroup, "PhiBeam", i);
+            double ThetaTarget = GetParamValueEIRP(testDataGroup, "ThetaTarget", i);
+            double PhiTarget = GetParamValueEIRP(testDataGroup, "PhiTarget", i);
             computeEIRP(EIRP0, BW3dB, Augment, Attenuation, ThetaBeam, PhiBeam, ThetaTarget, PhiTarget, initResult);
             bool success = (initResult->INFO == 0);
             string errorMessage = success ? "" : "Test failed with INFO = 1";
@@ -228,14 +228,14 @@ PerformanceTestReport PerformanceTestComputeEIRP(HINSTANCE hinstLib, const TestC
         testSuiteResult.suiteName = "PerformanceTest Group" + to_string(++count);
 
         for (int i = 0; i < dataFrequency; i++) {
-            double EIRP0 = GetRaramValueEIRP(testDataGroup, "EIRP0", i);
-            double BW3dB = GetRaramValueEIRP(testDataGroup, "BW3dB", i);
-            double Augment = GetRaramValueEIRP(testDataGroup, "Augment", i);
-            double Attenuation = GetRaramValueEIRP(testDataGroup, "Attenuation", i);
-            double ThetaBeam = GetRaramValueEIRP(testDataGroup, "ThetaBeam", i);
-            double PhiBeam = GetRaramValueEIRP(testDataGroup, "PhiBeam", i);
-            double ThetaTarget = GetRaramValueEIRP(testDataGroup, "ThetaTarget", i);
-            double PhiTarget = GetRaramValueEIRP(testDataGroup, "PhiTarget", i);
+            double EIRP0 = GetParamValueEIRP(testDataGroup, "EIRP0", i);
+            double BW3dB = GetParamValueEIRP(testDataGroup, "BW3dB", i);
+            double Augment = GetParamValueEIRP(testDataGroup, "Augment", i);
+            double Attenuation = GetParamValueEIRP(testDataGroup, "Attenuation", i);
+            double ThetaBeam = GetParamValueEIRP(testDataGroup, "ThetaBeam", i);
+            double PhiBeam = GetParamValueEIRP(testDataGroup, "PhiBeam", i);
+            double ThetaTarget = GetParamValueEIRP(testDataGroup, "ThetaTarget", i);
+            double PhiTarget = GetParamValueEIRP(testDataGroup, "PhiTarget", i);
 
             GetProcessMemoryInfo(hProcess, &memCounter, sizeof(memCounter));
             memBefore = memCounter.WorkingSetSize;

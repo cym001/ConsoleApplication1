@@ -63,7 +63,7 @@ struct PerformanceTestReport {
 };
 
 
-double GetRaramValueEIRP(TestDataComputeEIRP testData, string paramName, int index);
+double GetParamValueEIRP(TestDataComputeEIRP testData, string paramName, int index);
 
 TestResult PerformAutomatedTestsComputeEIRP(HINSTANCE hinstLib, const TestConfiguration& config);
 
