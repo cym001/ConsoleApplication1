@@ -31,7 +31,6 @@ int main() {
         return 1;
     }
 
-
     TestConfiguration config1 = ParseTestConfig(d);
     PrintTestConfiguration(config1);
     StoreGeneratedTestData(config1, "ComputeEIRP", 3, 4);
