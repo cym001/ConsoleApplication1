@@ -10,6 +10,7 @@
 #include <variant>
 #include <ctime>
 #include <fstream>
+#include <sstream>
 #include <chrono>
 #include <cstdio>
 #include <Windows.h>
@@ -341,4 +342,45 @@ void ExportPerformanceTestReportToJson(const PerformanceTestReport& report, cons
     else {
         cerr << "Failed to open file for writing: " << filePath << endl;
     }
+}
+
+void GenerateHtmlReport(const PerformanceTestReport& report, const std::string& filePath) {
+    std::ofstream file(filePath);
+    if (!file.is_open()) {
+        std::cerr << "Failed to open file for writing: " << filePath << std::endl;
+        return;
+    }
+
+    // HTML头部
+    file << "<!DOCTYPE html>\n<html>\n<head>\n<title>" << report.reportName << "</title>\n</head>\n<body>\n";
+    file << "<h1>" << report.reportName << "</h1>\n";
+
+    // 遍历每个测试套件
+    for (const auto& suite : report.suiteResults) {
+        file << "<h2>" << suite.suiteName << "</h2>\n";
+        file << "<ul>\n";
+
+        // 遍历每个测试结果
+        for (const auto& result : suite.testResults) {
+            file << "<li>" << result.testName << " - ";
+            file << "Execution Time: " << result.executionTime << "s, ";
+            file << "Memory Usage: " << result.memoryUsage << "MB, ";
+            file << "CPU Usage: " << result.cpuUsage << "%, ";
+            file << "Result: " << (result.success ? "Success" : "Failed");
+
+            if (!result.success) {
+                file << " - " << result.errorMessage;
+            }
+
+            file << "</li>\n";
+        }
+
+        file << "</ul>\n";
+    }
+
+    // HTML尾部
+    file << "</body>\n</html>";
+
+    file.close();
+    std::cout << "Report generated: " << filePath << std::endl;
 }

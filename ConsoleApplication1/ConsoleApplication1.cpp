@@ -52,6 +52,8 @@ int main() {
 
     ExportPerformanceTestReportToJson(testReport, ".\\testresult\\performance_test_result.json");
 
+    GenerateHtmlReport(testReport, ".\\testresult\\performance_test_result1.html");
+
     FreeLibrary(hinstLib);
 
     delete[] readBuffer;

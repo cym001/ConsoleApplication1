@@ -74,3 +74,5 @@ PerformanceTestReport PerformanceTestComputeEIRP(HINSTANCE hinstLib, const TestC
 void PrintPerformanceTestReport(const PerformanceTestReport& report);
 
 void ExportPerformanceTestReportToJson(const PerformanceTestReport& report, const char* filePath);
+
+void GenerateHtmlReport(const PerformanceTestReport& report, const std::string& filePath);
