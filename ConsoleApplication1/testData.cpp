@@ -4,7 +4,10 @@
 #include <cstdlib>
 #include <ctime>
 #include <string>
+#include <sstream>
+#include <iomanip>
 #include <map>
+#include <chrono>
 #include <random>
 #include "rapidjson/document.h"
 #include "rapidjson/prettywriter.h" 
@@ -141,7 +144,7 @@ void PrintDataInFunction(const FunctionCall& function) {
     }
 }
 
-void ExportTestDataToJson(const FunctionCall& function, const char* filePath) {
+void ExportTestDataToJson(const FunctionCall& function, string filePath) {
     // 创建一个RapidJSON的Document对象
     Document d;
     d.SetObject();
@@ -288,4 +291,18 @@ vector<double> GetParamsValue(TestDataComputeEIRP testData, string paramName) {
         cerr << "Parameter not found: " << paramName << endl;
     }
     return null;
+}
+
+string CurrentTimeForFilePath(string filePath1, string filePath2) {
+    time_t now = time(nullptr);
+    tm nowTm = {}; 
+
+    localtime_s(&nowTm, &now); 
+
+    ostringstream oss;
+    oss << put_time(&nowTm, "%m%d%H%M%S"); 
+
+    string formattedTime = oss.str();
+    string result = filePath1 + formattedTime + filePath2;
+    return result;
 }

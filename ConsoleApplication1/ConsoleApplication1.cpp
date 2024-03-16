@@ -6,6 +6,7 @@
 #include "testcase.h"
 #include "testdata.h"
 #include "testExecution.h"
+#include <string>
 
 using namespace std;
 using namespace rapidjson;
@@ -19,25 +20,14 @@ int main() {
     HINSTANCE hinstLib = load_library(d);
 
 
-
-    // 获取函数指针
-    auto init = (Result * (*)())GetProcAddress(hinstLib, "init");
-    auto computeEIRP = (void (*)(double, double, double, double, double, double, double, double, Result*))GetProcAddress(hinstLib, "ComputeEIRP");
-    auto final = (void (*)(Result*))GetProcAddress(hinstLib, "final");
-
-    if (!init || !computeEIRP || !final) {
-        cerr << "Function cannot be loaded" << '\n';
-        FreeLibrary(hinstLib);
-        return 1;
-    }
-
     TestConfiguration config1 = ParseTestConfig(d);
     PrintTestConfiguration(config1);
     StoreGeneratedTestData(config1, "ComputeEIRP", 3, 4);
-    const char* json_path = ".\\testdata\\testdata.json";
+    //const char* json_path = ".\\testdata\\testdata.json";
     FunctionCall function_EIRP = GetFunction(config1, "ComputeEIRP");
     PrintDataInFunction(function_EIRP);
-    ExportTestDataToJson(function_EIRP, json_path);
+    string data_path = CurrentTimeForFilePath(".\\testdata\\testdata", ".json");
+    ExportTestDataToJson(function_EIRP, data_path);
     //PrintDataInParameter(parameters);
     //ExportTestDataToJson(parameters, json_path);
 
@@ -49,7 +39,8 @@ int main() {
 
     PrintPerformanceTestReport(testReport);
 
-    ExportPerformanceTestReportToJson(testReport, ".\\testresult\\performance_test_result.json");
+    string performance_path = CurrentTimeForFilePath(".\\testresult\\performance_test_result", ".json");
+    ExportPerformanceTestReportToJson(testReport, performance_path);
 
     GenerateHtmlReport(testReport, ".\\testresult\\performance_test_result1.html");
 

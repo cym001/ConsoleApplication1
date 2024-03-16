@@ -22,11 +22,13 @@ void StoreGeneratedTestData(TestConfiguration& config, string functionName, int 
 
 void PrintDataInFunction(const FunctionCall& function);
 
-void ExportTestDataToJson(const FunctionCall& function, const char* filePath);
+void ExportTestDataToJson(const FunctionCall& function, string filePath);
 
 vector<double> GetParamsValue(TestDataComputeEIRP testData, string paramName);
 
 void GenerateRandomDataForFunctionCall1(FunctionCall& function, int numRandomDataSets, int numValuesPerDataSet);
+
+string CurrentTimeForFilePath(string filePath1, string filePath2);
 
 //int test_int(std::vector<Param>& params);
 //double test_double(std::vector<Param>& params);

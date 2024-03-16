@@ -67,12 +67,12 @@ double GetParamValueEIRP(TestDataComputeEIRP testData, string paramName, int ind
 
 TestResult PerformAutomatedTestsComputeEIRP(HINSTANCE hinstLib, const TestConfiguration& config);
 
-void ExportTestResultsToJson(const vector<GroupTestResult>& groupTestResults, const char* filePath);
+void ExportTestResultsToJson(const vector<GroupTestResult>& groupTestResults, string filePath);
 
 PerformanceTestReport PerformanceTestComputeEIRP(HINSTANCE hinstLib, const TestConfiguration& config);
 
 void PrintPerformanceTestReport(const PerformanceTestReport& report);
 
-void ExportPerformanceTestReportToJson(const PerformanceTestReport& report, const char* filePath);
+void ExportPerformanceTestReportToJson(const PerformanceTestReport& report, string filePath);
 
-void GenerateHtmlReport(const PerformanceTestReport& report, const std::string& filePath);
+void GenerateHtmlReport(const PerformanceTestReport& report, string filePath);

@@ -9,6 +9,7 @@
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"
 #include "testCase.h"
+#include <stdexcept>
 
 using namespace std;
 using namespace rapidjson;
@@ -159,5 +160,5 @@ FunctionCall GetFunction(const TestConfiguration& config, string functionName) {
             return function;
         }
     }
-    cerr << "FunctionCall is not exist." << endl;
+    throw runtime_error("FunctionCall does not exist: " + functionName);
 }

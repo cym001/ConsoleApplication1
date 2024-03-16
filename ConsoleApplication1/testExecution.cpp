@@ -132,7 +132,7 @@ TestResult PerformAutomatedTestsComputeEIRP(HINSTANCE hinstLib, const TestConfig
 
 }
 
-void ExportTestResultsToJson(const vector<GroupTestResult>& groupTestResults, const char* filePath) {
+void ExportTestResultsToJson(const vector<GroupTestResult>& groupTestResults, string filePath) {
     Document d;
     d.SetObject();
 
@@ -290,7 +290,7 @@ void PrintPerformanceTestReport(const PerformanceTestReport& report) {
     }
 }
 
-void ExportPerformanceTestReportToJson(const PerformanceTestReport& report, const char* filePath) {
+void ExportPerformanceTestReportToJson(const PerformanceTestReport& report, string filePath) {
     Document d;
     d.SetObject();
 
@@ -344,7 +344,7 @@ void ExportPerformanceTestReportToJson(const PerformanceTestReport& report, cons
     }
 }
 
-void GenerateHtmlReport(const PerformanceTestReport& report, const std::string& filePath) {
+void GenerateHtmlReport(const PerformanceTestReport& report, string filePath) {
     std::ofstream file(filePath);
     if (!file.is_open()) {
         std::cerr << "Failed to open file for writing: " << filePath << std::endl;
@@ -384,3 +384,4 @@ void GenerateHtmlReport(const PerformanceTestReport& report, const std::string& 
     file.close();
     std::cout << "Report generated: " << filePath << std::endl;
 }
+
