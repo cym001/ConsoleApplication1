@@ -61,7 +61,7 @@ struct TestConfiguration {
     vector<FunctionCall> interfaceFunctionCallSequence;
 };
 
-Document read_config(const char* path, char* readBuffer);
+Document read_file(const char* path, char* readBuffer);
 
 HINSTANCE load_library(const Document& d);
 
@@ -76,6 +76,8 @@ void PrintFunctionCall(const FunctionCall& call);
 void PrintTestConfiguration(const TestConfiguration& config);
 
 FunctionPtrVariant LoadFunctionPointer(HINSTANCE hinstLib, const string& funcName);
+
+void ReadTestData(const char* path, TestConfiguration& config);
 
 /*struct MyStruct {
     int value1;

@@ -9,13 +9,14 @@
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"
 #include "testCase.h"
+#include <string>
 #include <stdexcept>
 
 using namespace std;
 using namespace rapidjson;
 
 
-Document read_config(const char* path, char* readBuffer) {
+Document read_file(const char* path, char* readBuffer) {
     
     FILE* fp;
     errno_t err = fopen_s(&fp, path, "rb"); 
@@ -97,6 +98,41 @@ TestConfiguration ParseTestConfig(const Document& d) {
     }
 
     return config;
+}
+
+void ReadTestData(const char* path, TestConfiguration& config) {
+    char* readBuffer = new char[65536];
+    Document d = read_file(path, readBuffer);
+    string functionName = d["functionName"].GetString();
+    for (FunctionCall& functionCall : config.interfaceFunctionCallSequence) {
+        if (functionCall.functionName == functionName) {
+            const Value& testData = d["testData"];
+
+            for (SizeType i = 0; i < testData.Size(); i++) {
+                const Value& dataGroup = testData[i];
+                TestDataComputeEIRP testDataComputeEIRP;
+
+                testDataComputeEIRP.groupNumber = dataGroup["groupNumber"].GetInt();
+                testDataComputeEIRP.dataFrequency = dataGroup["dataFrequency"].GetInt();
+                testDataComputeEIRP.description = dataGroup["description"].GetString();
+
+                const Value& datas = dataGroup["datas"];
+                for (Value::ConstMemberIterator itr = datas.MemberBegin(); itr != datas.MemberEnd(); ++itr) {
+                    std::vector<double> dataVector;
+                    const Value& dataArr = itr->value;
+
+                    for (SizeType j = 0; j < dataArr.Size(); j++) {
+                        dataVector.push_back(dataArr[j].GetDouble());
+                    }
+
+                    testDataComputeEIRP.datas[itr->name.GetString()] = dataVector;
+                }
+                functionCall.testData.push_back(testDataComputeEIRP);
+
+            }
+        }
+    }
+    
 }
 
 void PrintParameter(const Parameter& param) {

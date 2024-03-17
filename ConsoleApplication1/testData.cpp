@@ -306,3 +306,4 @@ string CurrentTimeForFilePath(string filePath1, string filePath2) {
     string result = filePath1 + formattedTime + filePath2;
     return result;
 }
+
